@@ -125,6 +125,49 @@ class _ElectionInfoState extends State<ElectionInfo> {
                 )
               ],
             ),
+            const Divider(),
+            FutureBuilder<List>(
+              future: getCandidateNum(widget.ethClient),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  return Column(
+                    children: [
+                      for (int i = 0; i < snapshot.data![0].toInt(); i++)
+                        FutureBuilder<List>(
+                          future: candidateInfo(i, widget.ethClient),
+                          builder: (context, candidateSnapshot) {
+                            if (candidateSnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else {
+                              return ListTile(
+                                title: Text(
+                                  "Name: ${candidateSnapshot.data![0][0]}",
+                                ),
+                                subtitle: Text(
+                                  "Votes: ${candidateSnapshot.data![0][1]}",
+                                ),
+                                trailing: ElevatedButton(
+                                  onPressed: () {
+                                    vote(i, widget.ethClient);
+                                  },
+                                  child: const Text("Vote"),
+                                ),
+                              );
+                            }
+                          },
+                        )
+                    ],
+                  );
+                }
+              },
+            )
           ],
         ),
       ),

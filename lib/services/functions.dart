@@ -72,6 +72,20 @@ Future<List> getCandidateNum(Web3Client ethClient) async {
   return result;
 }
 
+Future<List> getTotalVotes(Web3Client ethClient) async {
+  List<dynamic> result = await ask("getTotalVotes", [], ethClient);
+  return result;
+}
+
+Future<List> candidateInfo(int index, Web3Client ethClient) async {
+  List<dynamic> result = await ask(
+    "candidateInfo",
+    [BigInt.from(index)],
+    ethClient,
+  );
+  return result;
+}
+
 Future<List<dynamic>> ask(
   String funcName,
   List<dynamic> args,
@@ -79,8 +93,11 @@ Future<List<dynamic>> ask(
 ) async {
   final contract = await loadContract();
   final ethFunction = contract.function(funcName);
-  final result =
-      ethClient.call(contract: contract, function: ethFunction, params: args);
+  final result = ethClient.call(
+    contract: contract,
+    function: ethFunction,
+    params: args,
+  );
   return result;
 }
 

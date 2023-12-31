@@ -53,5 +53,11 @@ contract Election {
         totalVotes++;
     }
 
-    // constructor() public {}
+    function getTotalVotes() public view returns (uint) {
+        return totalVotes;
+    }
+
+    function candidateInfo(uint index) public view returns (Candidate memory) {
+        return candidates[index];
+    }
 }
