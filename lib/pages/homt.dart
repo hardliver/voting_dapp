@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:voting_dapp/pages/election_info.dart';
+import 'package:voting_dapp/services/functions.dart';
 import 'package:voting_dapp/utils/constants.dart';
 import 'package:web3dart/web3dart.dart';
+import 'package:web_socket_channel/io.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,7 +21,13 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     httpClient = Client();
-    ethClient = Web3Client(ip, httpClient!);
+    ethClient = Web3Client(
+      rpcURL,
+      Client(),
+      socketConnector: () {
+        return IOWebSocketChannel.connect(wsURL).cast<String>();
+      },
+    );
     super.initState();
   }
 
@@ -41,11 +50,27 @@ class _HomeState extends State<Home> {
               ),
             ),
             const SizedBox(height: 10),
-            Container(
+            SizedBox(
               width: double.infinity,
               height: 45,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  if (controller.text.isNotEmpty) {
+                    final currentContext = context;
+                    await startElection(controller.text, ethClient!);
+                    if (context.mounted) {
+                      Navigator.push(
+                        currentContext,
+                        MaterialPageRoute(
+                          builder: (context) => ElectionInfo(
+                            ethClient: ethClient!,
+                            electionName: controller.text,
+                          ),
+                        ),
+                      );
+                    }
+                  }
+                },
                 child: const Text("Start Election"),
               ),
             )

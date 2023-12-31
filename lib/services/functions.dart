@@ -36,6 +36,8 @@ Future<String> callFunction(
       function: ethFunction,
       parameters: args,
     ),
+    chainId: 1337,
+    // fetchChainIdFromNetworkId: true,
   );
   return result;
 }

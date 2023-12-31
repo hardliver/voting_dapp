@@ -1,4 +1,7 @@
 const String ip = "192.168.68.105";
+const String port = "7545";
+const String rpcURL = "http://$ip:$port";
+const String wsURL = "ws://$ip:$port";
 
 const String ownerPrivateKey =
     "0xa56e609a2bc1c3f6b3d02555883a6652a65b764a936bd802bb48e75cb3202b4a";
